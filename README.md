@@ -17,7 +17,8 @@ Password = \
 Client ID =
 
 ### Read/Write Files from Disk
-Change the image path.
+1. Create a folder named "card_image".
+2. Copy the path of the folder and add "/card.jpg" at the end of the path. For example, C:/Users/username/card_image/card.jpg.
 
 ### OpenAI
 Get your own API Key.
