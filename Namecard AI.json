@@ -1,0 +1,329 @@
+{
+  "name": "Namecard AI",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "text": "You are an AI assistant that extracts structured information from name cards. For each name card, extract only the following details: Name, Company, Job Title, Email, Phone Numbers, Address, and Nature of Business.\n\nFor the \"Phone Numbers\" fields, please extract and return each phone number in separate JSON keys as follows:\n- Identify the phone number that appears most prominently on the card (for example, the one in larger font or at the top of the list) and assign it to \"Primary Phone\". If the phone number is labelled as Tel, then it is not the primary \n- \"Tel Phone\": If there is an additional phone number labeled as \"Tel\", \"Mobile\", or similar, assign it to \"Tel Phone\".\n- \"Fax Phone\": If a phone number is labeled as \"Fax\", assign it to \"Fax Phone\".\n- Identify the phone number that appears most prominently on the card (for example, the one in larger font or at the top of the list) and assign it to \"Primary Phone\", regardless of its label.\n- Preserve the exact digits each phone number. Make sure that you do not confuse with 6 and 5 and which of it appear first.\n- If phone number starts with a '+', remove the '+'\n- For any phone number type that is not present, return an empty string.\n\nFor the \"Nature of Business\" field:\n- Research the company using reliable sources or your existing knowledge to determine its primary business activity.\n- Provide a brief description of the company's nature of business.\n- If the company is not found or no clear nature of business is available, return an empty string.\n\nReturn your output strictly in JSON format with the following structure:\n\n{\n  \"Name\": \"<extracted name or empty string>\",\n  \"Company\": \"<extracted company or empty string>\",\n  \"Job Title\": \"<extracted job title or empty string>\",\n  \"Email\": \"<extracted email or empty string>\",\n  \"Primary Phone\": \"<extracted primary phone number or empty string>\",\n  \"Tel Phone\": \"<extracted telephone number or empty string>\",\n  \"Fax Phone\": \"<extracted fax phone number or empty string>\",\n  \"Address\": \"<extracted address or empty string>\",\n  \"Nature of Business\": \"<extracted nature of business or empty string>\"\n  \n}\nEnsure that if an address is present on the name card, you extract and return it correctly. If no address is provided on the card, return an empty string for the 'Address' field.\nDo not include any additional text, commentary, or markdown formatting in your response.\n",
+        "inputType": "base64",
+        "simplify": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        704,
+        -192
+      ],
+      "id": "ec7ea60b-e793-486a-82a7-2d72c73c4ae0",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "55bxuKfW9jtiipTP",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fileSelector": "C:/Users/imzfr/n8n_resources/image/card.jpg",
+        "options": {
+          "fileExtension": "jpg",
+          "fileName": "=card.jpg"
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        480,
+        -192
+      ],
+      "id": "31233a81-c67d-49d7-b44b-52fcb44001f0",
+      "name": "Read/Write Files from Disk3",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "topics": "trigger",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mqttTrigger",
+      "typeVersion": 1,
+      "position": [
+        192,
+        -192
+      ],
+      "id": "2736c109-f68b-428b-939b-19414d7ddd3b",
+      "name": "MQTT Trigger",
+      "credentials": {
+        "mqtt": {
+          "id": "Hivo3CEhYg8zwa7W",
+          "name": "MQTT account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const results = [];\n\nfor (const item of items) {\n  // Get the GPT output content (a JSON string)\n  const content = item.json.choices[0].message.content;\n  \n  // Try to parse the JSON string from GPT\n  let parsed;\n  try {\n    parsed = JSON.parse(content);\n  } catch (error) {\n    // If parsing fails, return the raw content with an error flag\n    parsed = {\n      error: \"Failed to parse JSON\",\n      rawContent: content\n    };\n  }\n  \n  // Add the parsed object to the results array\n  results.push({ json: parsed });\n}\n\nreturn results;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        896,
+        -192
+      ],
+      "id": "ded9852c-62bc-4f5e-814d-9832311ee5ad",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "18J21FgFrTLZtqBQO385t1X2o-2tmwg7x97xhg6qZZv0",
+          "mode": "list",
+          "cachedResultName": "Namecard AI Data 2025",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18J21FgFrTLZtqBQO385t1X2o-2tmwg7x97xhg6qZZv0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1034337313,
+          "mode": "list",
+          "cachedResultName": "CHART",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18J21FgFrTLZtqBQO385t1X2o-2tmwg7x97xhg6qZZv0/edit#gid=1034337313"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.Name }}",
+            "Primary Phone": "={{ $json['Primary Phone'] }}",
+            "Tel Phone": "={{ $json['Tel Phone'] }}",
+            "Nature of Business": "={{ $json['Nature of Business'] }}",
+            "Company": "={{ $json.Company }}",
+            "Job Title": "={{ $json['Job Title'] }}",
+            "Email": "={{ $json.Email }}",
+            "Fax Phone": "={{ $json['Fax Phone'] }}",
+            "Address": "={{ $json.Address }}"
+          },
+          "matchingColumns": [
+            "Name"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Job Title",
+              "displayName": "Job Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Primary Phone",
+              "displayName": "Primary Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Tel Phone",
+              "displayName": "Tel Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Fax Phone",
+              "displayName": "Fax Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Address",
+              "displayName": "Address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Nature of Business",
+              "displayName": "Nature of Business",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1088,
+        -192
+      ],
+      "id": "f470b903-6189-4f7a-a64c-1c4b406588d1",
+      "name": "Google Sheets"
+    },
+    {
+      "parameters": {
+        "toRecipients": "=",
+        "subject": "Thank You for Visiting SHRDC Booth",
+        "bodyContent": "=Dear {{$json.Name}},\n\nThank you for sharing your business card with us.\n\nWe greatly appreciate the opportunity to connect and to learn more about your role at {{ $json.Company }}. It is a pleasure to have your contact details and we look forward to potential opportunities for collaboration or supporting your initiatives in the future.\n\nOnce again, thank you and we wish you a wonderful day.\n\nWarm regards,\n\nTs. Dr. Chua Wen-Shyan\nHead of Malaysian Smart Factory 4.0 | SHRDC\nMobile: 03-55133560\nPhone: 012-2828653\nShah Alam, Selangor, Malaysia",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        1296,
+        -192
+      ],
+      "id": "36cebbdd-3e52-4dca-b414-cfb1ad8b10d9",
+      "name": "Send a message",
+      "webhookId": "e394bd6f-def4-45ac-a150-6f192b2a43b4"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        192,
+        -16
+      ],
+      "id": "2b2876c2-7043-4979-af83-48cd888b8c9a",
+      "name": "When clicking ‘Execute workflow’"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk3": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MQTT Trigger": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c680171e-002f-46a1-bf2d-aa5920819aa3",
+  "meta": {
+    "instanceId": "8bf234bd718bda60e880542bbf6d2421c8de049a5a31cb4346ddb2c6a5c4cf4d"
+  },
+  "id": "XyMUNwh9wZFJankA",
+  "tags": []
+}
