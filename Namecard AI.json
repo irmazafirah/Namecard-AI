@@ -220,7 +220,7 @@
     },
     {
       "parameters": {
-        "toRecipients": "=",
+        "toRecipients": "={{ $json.Email }}",
         "subject": "Thank You for Visiting SHRDC Booth",
         "bodyContent": "=Dear {{$json.Name}},\n\nThank you for sharing your business card with us.\n\nWe greatly appreciate the opportunity to connect and to learn more about your role at {{ $json.Company }}. It is a pleasure to have your contact details and we look forward to potential opportunities for collaboration or supporting your initiatives in the future.\n\nOnce again, thank you and we wish you a wonderful day.\n\nWarm regards,\n\nTs. Dr. Chua Wen-Shyan\nHead of Malaysian Smart Factory 4.0 | SHRDC\nMobile: 03-55133560\nPhone: 012-2828653\nShah Alam, Selangor, Malaysia",
         "additionalFields": {}
@@ -320,7 +320,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "c680171e-002f-46a1-bf2d-aa5920819aa3",
+  "versionId": "7dc1d0a9-360e-4e2e-81ee-a4fb4029cee8",
   "meta": {
     "instanceId": "8bf234bd718bda60e880542bbf6d2421c8de049a5a31cb4346ddb2c6a5c4cf4d"
   },
