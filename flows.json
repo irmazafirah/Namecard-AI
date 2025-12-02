@@ -1,0 +1,259 @@
+[
+    {
+        "id": "568154f4a314d57a",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "e7544851660f1eba",
+        "type": "inject",
+        "z": "568154f4a314d57a",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 160,
+        "y": 180,
+        "wires": [
+            [
+                "91b9f4dfd06b15fe"
+            ]
+        ]
+    },
+    {
+        "id": "6115f625e46cca89",
+        "type": "file",
+        "z": "568154f4a314d57a",
+        "name": "",
+        "filename": "C:\\Users\\imzfr\\n8n_resources\\image\\card.jpg",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 650,
+        "y": 180,
+        "wires": [
+            [
+                "07b59a5b3daa6744"
+            ]
+        ]
+    },
+    {
+        "id": "07b59a5b3daa6744",
+        "type": "mqtt out",
+        "z": "568154f4a314d57a",
+        "name": "",
+        "topic": "trigger",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "288eef2028897d62",
+        "x": 1010,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "9ef6e9bd33d722a3",
+        "type": "file",
+        "z": "568154f4a314d57a",
+        "name": "",
+        "filename": "filename",
+        "filenameType": "msg",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "false",
+        "encoding": "none",
+        "x": 780,
+        "y": 100,
+        "wires": [
+            [
+                "4b3b28424168abe6"
+            ]
+        ]
+    },
+    {
+        "id": "c72bc47e47568b7c",
+        "type": "function",
+        "z": "568154f4a314d57a",
+        "name": "function 1",
+        "func": "let timestamp = new Date().toISOString().replace(/[-:.]/g, \"\"); // Get ISO string and remove non-filename-safe characters\nlet filename = 'C:\\\\Users\\\\USER\\\\Documents\\\\node-red_camera\\\\' + timestamp + '.jpg'\nmsg.filename = filename; // Store the filename in msg.filename\nmsg.payload = msg.payload\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 100,
+        "wires": [
+            [
+                "9ef6e9bd33d722a3",
+                "4798044df93c7834"
+            ]
+        ]
+    },
+    {
+        "id": "4b3b28424168abe6",
+        "type": "debug",
+        "z": "568154f4a314d57a",
+        "name": "debug 5",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1020,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "4798044df93c7834",
+        "type": "debug",
+        "z": "568154f4a314d57a",
+        "name": "debug 6",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 730,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "91b9f4dfd06b15fe",
+        "type": "ui_webcam",
+        "z": "568154f4a314d57a",
+        "name": "",
+        "group": "9886201561735f27",
+        "order": 0,
+        "width": "6",
+        "height": "8",
+        "countdown": false,
+        "autoStart": false,
+        "hideCaptureButton": false,
+        "showImage": -1,
+        "mirror": false,
+        "format": "png",
+        "x": 350,
+        "y": 180,
+        "wires": [
+            [
+                "6115f625e46cca89",
+                "c72bc47e47568b7c"
+            ]
+        ]
+    },
+    {
+        "id": "f74c1e4fde6164a1",
+        "type": "aedes broker",
+        "z": "568154f4a314d57a",
+        "name": "",
+        "mqtt_port": 1883,
+        "mqtt_ws_bind": "port",
+        "mqtt_ws_port": null,
+        "mqtt_ws_path": "",
+        "cert": "",
+        "key": "",
+        "ca": "",
+        "certname": "",
+        "keyname": "",
+        "caname": "",
+        "persistence_bind": "memory",
+        "dburl": "",
+        "usetls": false,
+        "x": 170,
+        "y": 80,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "288eef2028897d62",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "localhost",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "9886201561735f27",
+        "type": "ui_group",
+        "name": "Default",
+        "tab": "b2b62000e25e0b5a",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "b2b62000e25e0b5a",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "ad6f14607e55c572",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-node-ui-webcam": "0.5.0",
+            "node-red-contrib-aedes": "0.15.0",
+            "node-red-dashboard": "3.6.6"
+        }
+    }
+]
